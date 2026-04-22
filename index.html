@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>校园宠物关爱与流浪动物服务平台</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <div class="bg-orb orb-c"></div>
+
+  <header class="site-header">
+    <div class="brand-block">
+      <p class="brand-eyebrow">Campus Paws & Rescue</p>
+      <h1>校园宠物关爱与流浪动物服务平台</h1>
+      <p class="brand-subtitle">
+        连接师生、志愿者与社会资源，构建“发现-救助-医疗-领养-回访”一体化服务链。
+      </p>
+      <div class="hero-actions">
+        <a href="#pet-section" class="btn btn-primary">立即发布宠物档案</a>
+        <a href="#rescue-section" class="btn btn-ghost">提交紧急救助工单</a>
+      </div>
+    </div>
+    <nav class="top-nav">
+      <a href="#dashboard">数据总览</a>
+      <a href="#pet-section">宠物领养</a>
+      <a href="#adoption-section">领养审核</a>
+      <a href="#rescue-section">救助服务</a>
+      <a href="#lost-section">走失寻宠</a>
+      <a href="#volunteer-section">志愿活动</a>
+      <a href="#donation-section">物资捐助</a>
+      <button id="adminAuthBtn" class="top-nav-auth" type="button">管理员登录</button>
+      <span id="adminStatusText" class="admin-status">未登录</span>
+    </nav>
+  </header>
+
+  <main>
+    <section id="dashboard" class="panel">
+      <div class="panel-head">
+        <h2>平台实时数据看板</h2>
+        <p>所有数据与后端数据库实时同步。</p>
+      </div>
+      <div class="stats-grid">
+        <article class="stat-card">
+          <p>在册动物档案</p>
+          <strong id="statPets">0</strong>
+          <span>已登记宠物总数</span>
+        </article>
+        <article class="stat-card">
+          <p>可领养数量</p>
+          <strong id="statAdoptable">0</strong>
+          <span>状态为“可领养”的动物</span>
+        </article>
+        <article class="stat-card">
+          <p>待审核领养申请</p>
+          <strong id="statPendingAdoption">0</strong>
+          <span>等待管理员审核</span>
+        </article>
+        <article class="stat-card">
+          <p>救助待处理</p>
+          <strong id="statOpenRescue">0</strong>
+          <span>未完成工单总量</span>
+        </article>
+        <article class="stat-card">
+          <p>本月志愿参与人次</p>
+          <strong id="statVolunteer">0</strong>
+          <span>活动参与累计值</span>
+        </article>
+      </div>
+      <div class="progress-zone">
+        <article class="progress-card">
+          <h3>物资筹集进度</h3>
+          <div id="supplyProgress" class="progress-list"></div>
+        </article>
+        <article class="progress-card notice-card">
+          <h3>平台公告</h3>
+          <p id="noticeTicker">加载中...</p>
+          <div class="chip-row">
+            <span class="chip">24h 值班</span>
+            <span class="chip">校内联动</span>
+            <span class="chip">实名追踪</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="pet-section" class="panel">
+      <div class="panel-head">
+        <h2>宠物档案与领养中心</h2>
+        <p>领养采用“申请-审核”流程，避免误操作。</p>
+      </div>
+      <div class="two-col">
+        <form id="petForm" class="module-form">
+          <h3>新增宠物档案</h3>
+          <label>昵称<input name="name" required placeholder="例如：奶糖"></label>
+          <label>类别
+            <select name="species" required>
+              <option value="猫">猫</option>
+              <option value="狗">狗</option>
+              <option value="兔">兔</option>
+              <option value="其他">其他</option>
+            </select>
+          </label>
+          <label>年龄（月）<input name="age" type="number" min="1" max="240" required></label>
+          <label>健康说明<input name="health" required placeholder="已驱虫/需复查等"></label>
+          <label>性格标签<input name="personality" required placeholder="亲人、活泼、怕生等"></label>
+          <label>当前状态
+            <select name="status" required>
+              <option value="可领养">可领养</option>
+              <option value="治疗中">治疗中</option>
+              <option value="待安置">待安置</option>
+            </select>
+          </label>
+          <button type="submit" class="btn btn-primary">保存宠物档案</button>
+        </form>
+        <div class="module-list-wrap">
+          <div class="toolbar">
+            <input id="petSearch" placeholder="搜索昵称/健康说明">
+            <select id="speciesFilter">
+              <option value="全部">全部类别</option>
+              <option value="猫">猫</option>
+              <option value="狗">狗</option>
+              <option value="兔">兔</option>
+              <option value="其他">其他</option>
+            </select>
+            <select id="statusFilter">
+              <option value="全部">全部状态</option>
+              <option value="可领养">可领养</option>
+              <option value="审核中">审核中</option>
+              <option value="治疗中">治疗中</option>
+              <option value="待安置">待安置</option>
+              <option value="已领养">已领养</option>
+            </select>
+          </div>
+          <div id="petList" class="card-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="adoption-section" class="panel">
+      <div class="panel-head">
+        <h2>领养申请审核</h2>
+        <p>管理员登录后可执行“通过/拒绝”审核。</p>
+      </div>
+      <div id="adoptionList" class="card-list"></div>
+    </section>
+
+    <section id="rescue-section" class="panel">
+      <div class="panel-head">
+        <h2>校园流浪动物救助服务</h2>
+        <p>工单状态按流程推进：待处理 → 已接单 → 送医中 → 已完成。</p>
+      </div>
+      <div class="two-col">
+        <form id="rescueForm" class="module-form">
+          <h3>创建救助工单</h3>
+          <label>上报人<input name="reporter" required placeholder="姓名/社团"></label>
+          <label>发现地点<input name="location" required placeholder="教学楼A后门"></label>
+          <label>现场情况<textarea name="description" rows="3" required placeholder="受伤、虚弱、疑似发热等"></textarea></label>
+          <label>紧急等级
+            <select name="urgency" required>
+              <option value="高">高</option>
+              <option value="中">中</option>
+              <option value="低">低</option>
+            </select>
+          </label>
+          <button type="submit" class="btn btn-primary">提交救助请求</button>
+        </form>
+        <div class="module-list-wrap">
+          <div class="toolbar">
+            <select id="rescueFilter">
+              <option value="全部">全部紧急等级</option>
+              <option value="高">高</option>
+              <option value="中">中</option>
+              <option value="低">低</option>
+            </select>
+          </div>
+          <div id="rescueList" class="card-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lost-section" class="panel">
+      <div class="panel-head">
+        <h2>走失寻宠与线索广场</h2>
+        <p>支持“走失”与“发现”双向发布，帮助更快找回。</p>
+      </div>
+      <div class="two-col">
+        <form id="lostForm" class="module-form">
+          <h3>发布走失/发现信息</h3>
+          <label>信息类型
+            <select name="type" required>
+              <option value="走失">走失</option>
+              <option value="发现">发现</option>
+            </select>
+          </label>
+          <label>宠物名称或特征<input name="petName" required placeholder="如：白底狸花、蓝项圈"></label>
+          <label>区域<input name="area" required placeholder="宿舍区3号楼附近"></label>
+          <label>详细描述<textarea name="detail" rows="3" required placeholder="时间、体貌、行为特征"></textarea></label>
+          <label>联系方式<input name="contact" required placeholder="手机号/微信"></label>
+          <button type="submit" class="btn btn-primary">发布线索信息</button>
+        </form>
+        <div class="module-list-wrap">
+          <div class="toolbar">
+            <select id="lostFilter">
+              <option value="全部">全部类型</option>
+              <option value="走失">走失</option>
+              <option value="发现">发现</option>
+            </select>
+          </div>
+          <div id="lostList" class="card-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="volunteer-section" class="panel">
+      <div class="panel-head">
+        <h2>志愿活动与校园联动</h2>
+        <p>活动报名采用弹窗表单，同一联系方式不可重复报名同一活动。</p>
+      </div>
+      <div id="eventList" class="event-grid"></div>
+    </section>
+
+    <section id="donation-section" class="panel">
+      <div class="panel-head">
+        <h2>爱心捐助与物资仓</h2>
+        <p>物资类别与数量启用校验，避免异常数据影响库存统计。</p>
+      </div>
+      <div class="two-col">
+        <form id="donationForm" class="module-form">
+          <h3>登记捐助</h3>
+          <label>捐助人<input name="donor" required placeholder="姓名/组织"></label>
+          <label>物资类别
+            <select name="category" required>
+              <option value="猫粮">猫粮</option>
+              <option value="狗粮">狗粮</option>
+              <option value="药品">药品</option>
+              <option value="保暖用品">保暖用品</option>
+            </select>
+          </label>
+          <label>数量<input name="amount" type="number" min="1" max="2000" required></label>
+          <label>备注<input name="note" placeholder="如：有效期、品牌"></label>
+          <button type="submit" class="btn btn-primary">提交捐助记录</button>
+        </form>
+        <div class="module-list-wrap">
+          <div id="donationList" class="card-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="modalBackdrop" class="modal-backdrop">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h3 id="modalTitle"></h3>
+        <button type="button" class="modal-close" data-modal-close>关闭</button>
+      </div>
+      <form id="modalForm" class="modal-form"></form>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>校园宠物关爱与流浪动物服务平台 | 让每一只小生命都被温柔对待</p>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>

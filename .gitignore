@@ -1,0 +1,11 @@
+__pycache__/
+.idea/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.db-journal
+tmp.bin
+test.db
+test.db-journal
+data/

@@ -1,0 +1,13 @@
+services:
+  campus-pet:
+    build: .
+    container_name: campus-pet-service
+    ports:
+      - "8000:8000"
+    environment:
+      CAMPUS_DB_PATH: /data/campus_pet.db
+      CAMPUS_ADMIN_USER: admin
+      CAMPUS_ADMIN_PASSWORD: admin123456
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
